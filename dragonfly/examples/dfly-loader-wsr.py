@@ -20,8 +20,8 @@ import os.path
 import pythoncom
 
 import logging
-from dragonfly.engines.engine import get_sapi5_engine
-engine = get_sapi5_engine()
+import dragonfly.engines
+engine = dragonfly.engines.get_engine('sapi5')
 
 
 #---------------------------------------------------------------------------

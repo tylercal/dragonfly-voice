@@ -3,7 +3,7 @@
 # (c) Copyright 2007, 2008 by Christo Butcher
 # Licensed under the LGPL.
 #
-#   Dragonfly is free software: you can redistribute it and/or modify it 
+# Dragonfly is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU Lesser General Public License as published 
 #   by the Free Software Foundation, either version 3 of the License, or 
 #   (at your option) any later version.
@@ -19,6 +19,7 @@
 #
 
 from ez_setup import use_setuptools
+
 use_setuptools()
 
 import os.path
@@ -45,8 +46,10 @@ try:
     from googlecode_distutils_upload import upload as upload_gcode
 except ImportError:
     import distutils.core
+
     class upload_gcode(distutils.core.Command):
         user_options = []
+
         def __init__(self, *args, **kwargs):
             sys.stderr.write("error: Install this module in"
                              " site-packages to upload:"
@@ -62,30 +65,29 @@ except ImportError:
 def read(*names):
     return open(os.path.join(os.path.dirname(__file__), *names)).read()
 
+
 setup(
-      name          = "dragonfly",
-      version       = release,
-      description   = "Speech recognition extension library",
-      author        = "Christo Butcher",
-      author_email  = "dist.dragonfly@twizzy.biz",
-      license       = "LGPL",
-      url           = "http://code.google.com/p/dragonfly/",
-      zip_safe      = False,  # To unzip documentation files.
-      long_description = read("README.txt"),
+    name="dragonfly",
+    version=release,
+    description="Speech recognition extension library",
+    license="LGPL",
+    url="https://github.com/tylercal/dragon-voice",
+    zip_safe=False,  # To unzip documentation files.
+    long_description=read("README.md"),
 
-      install_requires = "setuptools >= 0.6c7",
+    install_requires="setuptools >= 0.6c7",
 
-      classifiers=[
-                   "Environment :: Win32 (MS Windows)",
-                   "Development Status :: 4 - Beta",
-                   "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
-                   "Operating System :: Microsoft :: Windows",
-                   "Programming Language :: Python",
-                  ],
+    classifiers=[
+        "Environment :: Win32 (MS Windows)",
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+        "Operating System :: Microsoft :: Windows",
+        "Programming Language :: Python",
+    ],
 
-      packages=find_packages(),
+    packages=find_packages(),
 
-      test_suite="dragonfly.test.suites.natlink_suite",
+    test_suite="dragonfly.test.suites.natlink_suite",
 
-      cmdclass={'upload_gcode': upload_gcode},
-     )
+    cmdclass={'upload_gcode': upload_gcode},
+)

@@ -91,7 +91,7 @@ class Window(object):
     # Methods that control attribute access.
 
     def _set_handle(self, handle):
-        assert isinstance(handle, int)
+        assert isinstance(handle, int) or isinstance(handle, long)
         self._handle = handle
         self._windows_by_handle[handle] = self
     handle = property(fget=lambda self: self._handle,
