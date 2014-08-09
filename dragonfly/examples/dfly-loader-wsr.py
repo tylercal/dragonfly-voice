@@ -126,7 +126,10 @@ except NameError:
 directory = CommandModuleDirectory(path, excludes=[__file__])
 directory.load()
 
+engine.connect()
+
 engine.speak('beginning loop!')
+
 while 1:
     pythoncom.PumpWaitingMessages()
     time.sleep(.1)
