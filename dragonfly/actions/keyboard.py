@@ -46,18 +46,18 @@ class Typeable(object):
     def __str__(self):
         return "%s(%s)" % (self.__class__.__name__, self._name) + repr(self.events())
 
-    def on_events(self, timeout=0):
+    def on_events(self, timeout=0.01):
         events = [(m, True, 0) for m in self._modifiers]
         events.append((self._code, True, timeout))
         return events
 
-    def off_events(self, timeout=0):
+    def off_events(self, timeout=0.01):
         events = [(m, False, 0) for m in self._modifiers]
         events.append((self._code, False, timeout))
         events.reverse()
         return events
 
-    def events(self, timeout=0):
+    def events(self, timeout=0.01):
         events = [(self._code, True, 0), (self._code, False, timeout)]
         for m in self._modifiers[-1::-1]:
             events.insert(0, (m, True, 0))
