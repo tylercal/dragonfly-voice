@@ -121,6 +121,10 @@ class EngineBase(object):
         wrapper = self._load_grammar(grammar)
         self._grammar_wrappers[wrapper_key] = wrapper
 
+    def window_change(self, executable, title, handle):
+        for wrapper in self._grammar_wrappers.values():
+            wrapper.grammar.window_change(executable, title, handle)
+
     def _load_grammar(self, grammar):
         raise NotImplementedError("Virtual method not implemented for"
                                   " engine %s." % self)

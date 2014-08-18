@@ -423,6 +423,46 @@ class Grammar(object):
         self._log_begin.debug("Grammar %s:     active rules: %s."
             % (self._name, [r.name for r in self._rules if r.active]))
 
+
+    def window_change(self, executable, title, handle):
+        """
+            Foreground window changed detected
+
+            This method is called when the foreground window changes
+            or the title of the foreground window changes.
+
+            Arguments:
+             - *executable* -- the full path to the module whose
+               window is currently in the foreground.
+             - *title* -- window title of the foreground window.
+             - *handle* -- window handle to the foreground window.
+
+        """
+        self._log_begin.debug("Grammar %s: detected window change." % self._name)
+        self._log_begin.debug("Grammar %s:     executable '%s', title '%s'." % (self._name, executable, title))
+
+        if not self._enabled:
+            # Grammar is disabled, so deactivate all active rules.
+            [r.deactivate() for r in self._rules if r.active]
+
+        elif not self._context or self._context.matches(executable, title, handle):
+            # Grammar is within context.
+            if not self._in_context:
+                self._in_context = True
+                self.enter_context()
+                for r in self._rules:
+                    r.activate()
+
+        else:
+            # Grammar's context doesn't match, deactivate active rules.
+            if self._in_context:
+                self._in_context = False
+                self.exit_context()
+            [r.deactivate() for r in self._rules if r.active]
+
+        self._log_begin.debug("Grammar %s:     active rules: %s."
+            % (self._name, [r.name for r in self._rules if r.active]))
+
     def enter_context(self):
         """
             Enter context callback.

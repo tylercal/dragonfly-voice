@@ -13,10 +13,13 @@ for use with Window Speech Recognition.  It scans the
 directory it's in and loads any ``*.py`` it finds.
 
 """
-
+import ctypes
+import ctypes.wintypes
 
 import time
 import os.path
+import win32con
+from dragonfly import Window
 import pythoncom
 
 import logging
@@ -127,6 +130,29 @@ directory = CommandModuleDirectory(path, excludes=[__file__])
 directory.load()
 
 engine.connect()
+
+
+WinEventProcType = ctypes.WINFUNCTYPE(None, ctypes.wintypes.HANDLE, ctypes.wintypes.DWORD, ctypes.wintypes.HWND,
+                                      ctypes.wintypes.LONG, ctypes.wintypes.LONG, ctypes.wintypes.DWORD,
+                                      ctypes.wintypes.DWORD)
+
+
+def callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime):
+    window = Window.get_foreground()
+    if hwnd == window.handle:
+        engine.window_change(window.executable, window.title, window.handle)
+
+
+def set_hook(win_event_proc, event_type):
+    return ctypes.windll.user32.SetWinEventHook(event_type, event_type, 0, win_event_proc, 0, 0, win32con.WINEVENT_OUTOFCONTEXT)
+
+
+win_event_proc = WinEventProcType(callback)
+ctypes.windll.user32.SetWinEventHook.restype = ctypes.wintypes.HANDLE
+
+[set_hook(win_event_proc, et) for et in
+ {win32con.EVENT_SYSTEM_FOREGROUND, win32con.EVENT_OBJECT_NAMECHANGE, }]
+
 
 engine.speak('beginning loop!')
 
